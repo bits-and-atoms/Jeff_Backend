@@ -5,10 +5,14 @@ const Mood = require('./../../infrastructure/db/mood_schema');
 router.post('/chat', async (req, res) => {
     try {
         const userMessage = req.body.message;
+        const userId = req.body.userid;
         if (!userMessage) {
             return res.status(400).json({ error: 'Message is required' });
         }
-        const chatbotResponse = await gemini.run(userMessage);
+        if (!userId) {
+            return res.status(400).json({ error: 'User ID is required' });
+        }
+        const chatbotResponse = await gemini.run(userMessage, userId);
         res.json({ reply: chatbotResponse });
     } catch (error) {
         // console.error('Error during chat:', error);
